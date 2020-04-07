@@ -1,0 +1,13 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  artifacts:
+    - image: cflynnus/jide
+      context: .
+      docker:
+        dockerfile: Dockerfile
+deploy:
+  kubeContext: docker-desktop
+  kubectl:
+    manifests:
+      - "kubernetes/local.yaml"

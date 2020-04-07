@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jide
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jide-api
+  namespace: jide
+  labels:
+    app: jide-api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: jide-api-port
+      protocol: TCP
+      name: http
+  selector:
+    app: jide-api
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jide-api
+  namespace: jide
+  labels:
+    app: jide-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jide-api
+  template:
+    metadata:
+      labels:
+        app: jide-api
+    spec:
+      terminationGracePeriodSeconds: 1 # ok for local dev
+      containers:
+        - name: blog
+          image: cflynnus/jide:latest
+          env:
+            - name: PORT
+              value: "80"
+          ports:
+            - name: jide-api-port
+              containerPort: 80
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
