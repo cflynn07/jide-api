@@ -27,7 +27,9 @@ func executeQuery(query string, schema graphql.Schema) *graphql.Result {
 }
 
 func main() {
+	fmt.Println("ok main")
 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("healthz check")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "ok")
 	})
@@ -38,9 +40,8 @@ func main() {
 	})
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3000"
+		port = "80"
 	}
-	port = "3001"
 	go func() {
 		fmt.Println("Server is running on port ", port)
 		panic(http.ListenAndServe(":"+port, nil))
